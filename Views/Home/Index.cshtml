@@ -1,0 +1,135 @@
+﻿@using Legajos.Domain.Model
+
+@{
+    Layout = "_Layout";
+}
+@model RrhhModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="container">
+
+    <div class="form-group">
+        @Html.ActionLink("Todos", "FilterActivePersons", new { filter = 2 }, new { @class = "FilterPersons btn btn-outline-success" })
+        @Html.ActionLink("Activos", "FilterActivePersons", new { filter = 0 }, new { @class = "FilterPersons btn btn-outline-success" })
+        @Html.ActionLink("Inactivos", "FilterActivePersons", new { filter = 1 }, new { @class = "FilterPersons btn btn-outline-success" })
+    </div>
+
+    <br />
+    <table class="table table-bordered table-hover table-striped" id="ArticlesTable">
+        <thead class="table-dark">
+            <tr>
+                <th>
+                    Legajo
+                </th>
+                <th>
+                    Nombre
+                </th>
+                <th>
+                    Nivel
+                </th>
+                <th>
+                    Cuil
+                </th>
+                <th>
+                    Activo?
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.legajos)
+            {
+                <tr>
+                    <td width="50" align="center">
+                        @Html.DisplayFor(modelitem => item.Legajo)
+                    </td>
+                    <td width="450">
+                        @Html.DisplayFor(modelitem => item.Nombre)
+                    </td>
+                    <td width="50" align="center">
+                        @Html.DisplayFor(modelitem => item.Nivel)
+                    </td>
+                    <td width="130">
+                        @Html.DisplayFor(modelitem => item.Cuil)
+                    </td>
+                    <td width="100" align="center">
+                        @((item.If_Activo != null && item.If_Activo == 1) ? "Activo" : "Inactivo")
+                    </td>
+                    <td>
+                        @if (item.If_Del == 0)
+                        {
+                            @Html.ActionLink("Dar de baja", "UnsuscribePerson", new { legajo = item.Legajo }, new { @class = "UnsuscribePerson btn btn-outline-danger" })
+
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Reactivar", "SuscribePerson", new { legajo = item.Legajo }, new { @class = "SuscribePerson btn btn-outline-success" })
+                        }
+                        @Html.ActionLink("Editar", "UpdatePerson", new { legajo = item.Legajo }, new { @class = "UpdatePerson btn btn-outline-info" })
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <input type="button" value="Agregar" id="Aggregate" class="btn btn-primary" />
+    <br />
+    <div class="AgreggateData form-group">
+        <br />
+        @Html.AntiForgeryToken()
+        <form asp-action="AddPersons">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="col-md-6 form-group">
+                <label asp-for="Legajo" class="control-label"></label>
+                <input asp-for="Legajo" class="form-control" />
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <label asp-for="Nivel" class="control-label"></label>
+                <input asp-for="Nivel" class="form-control" />
+                <label asp-for="Passwd" class="control-label"></label>
+                <input asp-for="Passwd" class="form-control" />
+                <label asp-for="Code" class="control-label"></label>
+                <input asp-for="Code" class="form-control" />
+                <label asp-for="Doc_Tipo" class="control-label"></label>
+                <input asp-for="Doc_Tipo" class="form-control" />
+                <label asp-for="Doc_Nro" class="control-label"></label>
+                <input asp-for="Doc_Nro" class="form-control" />
+                <label asp-for="Cuil" class="control-label"></label>
+                <input asp-for="Cuil" class="form-control" />
+                <label asp-for="If_Activo" class="control-label"></label>
+                <input asp-for="If_Activo" class="form-control" />
+                <label asp-for="If_Del" class="control-label"></label>
+                <input asp-for="If_Del" class="form-control" />
+                <label asp-for="F_Alta" class="control-label"></label>
+                <input asp-for="F_Alta" class="form-control" />
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Grabar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            $('.AgreggateData').hide();
+
+            $('#Aggregate').on("click", function () {
+                $('.AgreggateData').toggle();
+            }
+            );
+
+        }
+        )
+    </script>
+}
